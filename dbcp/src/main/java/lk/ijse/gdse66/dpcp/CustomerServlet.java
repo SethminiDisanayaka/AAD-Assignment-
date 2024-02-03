@@ -1,4 +1,4 @@
 package lk.ijse.gdse66.dpcp;
 
-public class CustomerServlet {
+public class CustomerServlet extends {
 }
