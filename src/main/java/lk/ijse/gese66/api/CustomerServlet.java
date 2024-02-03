@@ -42,9 +42,10 @@ public class CustomerServlet extends HttpServlet {
                 String id = rst.getString("id");
                 String name = rst.getString("name");
                 String address = rst.getString("address");
-                System.out.printf("id=%s, name=%s, address=%s\n",id,name,address);
+                String contact = rst.getString("contact");
+                System.out.printf("id=%s, name=%s, address=%s ,contact=%s\n",id,name,address,contact);
 
-                customerList.add(new CustomerDTO(id, name, address));
+                customerList.add(new CustomerDTO(id, name, address,contact));
             }
 
             resp.setContentType("application/json"); //set the MIME type of the content of the response (Thus, add response header called "Content-Type")
