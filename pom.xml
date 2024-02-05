@@ -7,9 +7,6 @@
     <groupId>lk.ijse.gdse66</groupId>
     <artifactId>Servlet</artifactId>
     <version>1.0.0</version>
-    <modules>
-        <module>dbcp</module>
-    </modules>
 
     <packaging>pom</packaging>
     <!--    final product eka war widiyata thiyenawa kiyala pennanna -->

@@ -1,9 +1,8 @@
-package lk.ijse.gdse66.dpcp;
+package lk.ijse.gdse66.dbcp;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,19 +11,17 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet(name = "Customer", value = "/customer")
+@WebServlet(name = "customerServlet", value = "/customers")
 public class CustomerServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletContext sc = getServletContext();
         BasicDataSource dbcp = (BasicDataSource) sc.getAttribute("dbcp");
-
-        try(Connection connection =dbcp.getConnection()) {
+        try {
+            Connection connection = dbcp.getConnection();
             System.out.println(connection);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
     }
 }
