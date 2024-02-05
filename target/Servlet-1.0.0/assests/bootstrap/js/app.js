@@ -9,7 +9,17 @@ $('#btnGetAll').click(function (){
                 console.log(customer.name);
                 console.log(customer.address);
                 console.log(customer.contact);
+
+                const row = `<tr>
+                                <td>${customer.id}</td>
+                                <td>${customer.name}</td>
+                                <td>${customer.address}</td>
+                            </tr>`;
+                $('#tblcustomers').append(row);
             }
+        },
+        error : function (error) {
+            console.log("error: ", error);
         }
     })
 })
