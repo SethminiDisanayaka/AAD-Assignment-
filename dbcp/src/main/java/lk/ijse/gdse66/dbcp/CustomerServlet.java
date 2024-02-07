@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet(name = "customerServlet", value = "/customers")
+@WebServlet(name = "customerServlet", urlPatterns = "/customers")
 public class CustomerServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

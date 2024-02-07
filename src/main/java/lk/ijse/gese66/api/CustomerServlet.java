@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-@WebServlet(name = "CustomerServlet" ,value = "/customers",loadOnStartup = 1)
+@WebServlet(name = "CustomerServlet" ,urlPatterns = "/customers",loadOnStartup = 1)
 
 public class CustomerServlet extends HttpServlet {
     BasicDataSource pool;
@@ -52,6 +52,50 @@ public class CustomerServlet extends HttpServlet {
 
             Jsonb jsonb = JsonbBuilder.create();
             jsonb.toJson(customerList,resp.getWriter());
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Jsonb jsonb = JsonbBuilder.create();
+        CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+        String id = customerDTO.getId();
+        String name = customerDTO.getName();
+        String address = customerDTO.getAddress();
+        String contact =customerDTO.getContact();
+
+
+        if(id==null || !id.matches("C\\d{3}")){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID is empty or invalid");
+            return;
+        } else if (name == null || !name.matches("[A-Za-z ]+")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Name is empty or invalid");
+            return;
+        } else if (address == null || address.length() < 3) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Address is empty or invalid");
+            return;
+        }
+
+        System.out.printf("id=%s, name=%s, address=%s ,contact=%s\n", id,name,address,contact);
+
+
+        try (Connection connection = pool.getConnection()){
+            PreparedStatement stm = connection.prepareStatement("INSERT INTO customer(id, name, address,contact) VALUES (?,?,?,?)");
+
+            stm.setString(1,id);
+            stm.setString(2, name);
+            stm.setString(3, address);
+            stm.setString(4,contact);
+
+            if (stm.executeUpdate() != 0) {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                resp.getWriter().write("Added customer successfully");
+            }else {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to save the customer");
+            }
 
 
         } catch (SQLException e) {
