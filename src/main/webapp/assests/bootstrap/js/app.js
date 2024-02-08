@@ -113,7 +113,7 @@ $('#btnUpdate').click(function () {
 });
 
 
-$('#onActionSaveItem').click(function (){
+$('#btnItemGetAll').click(function (){
     $.ajax({
         url:"http://localhost:8080/pos/items",
         method:"GET",
@@ -138,4 +138,39 @@ $('#onActionSaveItem').click(function (){
             console.log("error: ", error);
         }
     })
+});
+
+$('#onActionSaveItem').click(function () {
+    const id = $('#itemID').val();
+    const name = $('#description').val();
+    const address = $('#unitPrice').val();
+    const contact = $('#quantity').val();
+
+    const itemObj = {
+        itemId: itemId,
+        description: description,
+        unitPrice: unitPrice,
+        quantity: quantity
+    };
+
+    $.ajax({
+        url: "http://localhost:8080/pos/items",
+        method: "POST",
+        data: JSON.stringify(itemObj),
+        contentType: "application/json",
+        success: function (resp, textStatus, jqxhr) {
+            console.log("success: ", resp);
+            console.log("success: ", textStatus);
+            console.log("success: ", jqxhr);
+
+            if (jqxhr.status == 201) {
+                alert(jqxhr.responseText);
+            }
+        },
+        error: function (jqxhr, textStatus, error) {
+            console.log("error: ", jqxhr);
+            console.log("error: ", textStatus);
+            console.log("error: ", error);
+        }
+    });
 });

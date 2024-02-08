@@ -59,4 +59,47 @@ public class ItemServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Jsonb jsonb = JsonbBuilder.create();
+        ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+        String itemId = itemDTO.getItemID();
+        String description = itemDTO.getDescription();
+        String unitPrice = itemDTO.getUnitPrice();
+        String quantity =itemDTO.getQuantity();
+
+
+        if(itemId==null || !itemId.matches("I\\d{3}")){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID is empty or invalid");
+            return;
+        } else if (description == null || !description.matches("[A-Za-z ]+")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Name is empty or invalid");
+            return;
+        }
+
+        System.out.printf("itemId=%s, description=%s, unitPrice=%s ,quantity=%s\n", itemId,description,unitPrice,quantity);
+
+
+        try (Connection connection = pool.getConnection()){
+            PreparedStatement stm = connection.prepareStatement("INSERT INTO customer(id, name, address,contact) VALUES (?,?,?,?)");
+
+            stm.setString(1,itemId);
+            stm.setString(2, description);
+            stm.setString(3, unitPrice);
+            stm.setString(4,quantity);
+
+            if (stm.executeUpdate() != 0) {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                resp.getWriter().write("Added customer successfully");
+            }else {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to save the customer");
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
