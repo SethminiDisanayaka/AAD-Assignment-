@@ -102,4 +102,22 @@ public class CustomerServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+
+        try (Connection connection = pool.getConnection()){
+            PreparedStatement stm = connection.prepareStatement("DELETE FROM customer WHERE id=?");
+            stm.setString(1,id);
+
+            if(stm.executeUpdate() != 0){
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else{
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete the customer!");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

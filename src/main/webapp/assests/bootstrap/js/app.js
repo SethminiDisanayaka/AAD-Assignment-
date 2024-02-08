@@ -59,3 +59,22 @@ $('#btnSave').click(function () {
         }
     });
 });
+
+$('#btnDelete').click(function () {
+    const id = $('#txt-id').val();
+
+    $.ajax({
+        url: "http://localhost:8080/app/customers?id=" + id,
+        method: "DELETE",
+        success: function (resp, textStatus, jqxhr) {
+            console.log("success: ", resp);
+            console.log("success: ", textStatus);
+            console.log("success: ", jqxhr);
+        },
+        error: function (jqxhr, textStatus, error) {
+            console.log("error: ", jqxhr);
+            console.log("error: ", textStatus);
+            console.log("error: ", error);
+        }
+    })
+});
