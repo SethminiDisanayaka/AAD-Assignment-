@@ -82,7 +82,7 @@ public class ItemServlet extends HttpServlet {
 
 
         try (Connection connection = pool.getConnection()){
-            PreparedStatement stm = connection.prepareStatement("INSERT INTO customer(id, name, address,contact) VALUES (?,?,?,?)");
+            PreparedStatement stm = connection.prepareStatement("INSERT INTO item(itemId, description, unitPrice,quantity) VALUES (?,?,?,?)");
 
             stm.setString(1,itemId);
             stm.setString(2, description);
@@ -93,9 +93,58 @@ public class ItemServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 resp.getWriter().write("Added customer successfully");
             }else {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to save the customer");
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to save the item");
             }
 
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String itemId = req.getParameter("itemId");
+
+        try (Connection connection = pool.getConnection()){
+            PreparedStatement stm = connection.prepareStatement("DELETE FROM item WHERE itemId=?");
+            stm.setString(1,itemId);
+
+            if(stm.executeUpdate() != 0){
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else{
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete the item!");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Jsonb jsonb = JsonbBuilder.create();
+        ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+        String itemId = itemDTO.getItemID();
+        String description = itemDTO.getDescription();
+        String unitPrice = itemDTO.getUnitPrice();
+        String quantity =itemDTO.getQuantity();
+
+
+        System.out.printf("itemId=%s, description=%s, unitPrice=%s ,quantity=%s\n", itemId,description,unitPrice,quantity);
+
+        try (Connection connection = pool.getConnection()){
+            PreparedStatement stm = connection.prepareStatement("UPDATE item SET description=?, unitPrice=? ,quantity=? WHERE itemId=?");
+
+            stm.setString(1,itemId);
+            stm.setString(2, description);
+            stm.setString(3, unitPrice);
+            stm.setString(4,quantity);
+            if (stm.executeUpdate() != 0) {
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else{
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update the customer");
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

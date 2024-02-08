@@ -141,10 +141,10 @@ $('#btnItemGetAll').click(function (){
 });
 
 $('#onActionSaveItem').click(function () {
-    const id = $('#itemID').val();
-    const name = $('#description').val();
-    const address = $('#unitPrice').val();
-    const contact = $('#quantity').val();
+    const itemId = $('#itemID').val();
+    const description = $('#description').val();
+    const unitPrice = $('#unitPrice').val();
+    const quantity = $('#quantity').val();
 
     const itemObj = {
         itemId: itemId,
@@ -173,4 +173,56 @@ $('#onActionSaveItem').click(function () {
             console.log("error: ", error);
         }
     });
+});
+
+$('#btnItemDelete').click(function () {
+    const id = $('#itemID').val();
+
+    $.ajax({
+        url: "http://localhost:8080/app/items?itemID=" + id,
+        method: "DELETE",
+        success: function (resp, textStatus, jqxhr) {
+            console.log("success: ", resp);
+            console.log("success: ", textStatus);
+            console.log("success: ", jqxhr);
+        },
+        error: function (jqxhr, textStatus, error) {
+            console.log("error: ", jqxhr);
+            console.log("error: ", textStatus);
+            console.log("error: ", error);
+        }
+    })
+});
+
+$('#btnItemUpdate').click(function () {
+    const itemId = $('#itemID').val();
+    const description = $('#description').val();
+    const unitPrice = $('#unitPrice').val();
+    const quantity = $('#quantity').val();
+
+    const itemObj = {
+        itemId: itemId,
+        description: description,
+        unitPrice: unitPrice,
+        quantity: quantity
+    };
+
+    const jsonObj = JSON.stringify(itemObj);
+
+    $.ajax({
+        url: "http://localhost:8080/app/items",
+        method: "PUT",
+        data: jsonObj,
+        contentType: "application/json",
+        success: function (resp, textStatus, jqxhr) {
+            console.log("success: ", resp);
+            console.log("success: ", textStatus);
+            console.log("success: ", jqxhr);
+        },
+        error: function (jqxhr, textStatus, error) {
+            console.log("error: ", jqxhr);
+            console.log("error: ", textStatus);
+            console.log("error: ", error);
+        }
+    })
 });
