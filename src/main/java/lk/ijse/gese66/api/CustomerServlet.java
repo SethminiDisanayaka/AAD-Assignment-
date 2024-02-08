@@ -58,6 +58,7 @@ public class CustomerServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Jsonb jsonb = JsonbBuilder.create();
@@ -116,6 +117,37 @@ public class CustomerServlet extends HttpServlet {
             }else{
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete the customer!");
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Jsonb jsonb = JsonbBuilder.create();
+        CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+        String id = customerDTO.getId();
+        String name = customerDTO.getName();
+        String address = customerDTO.getAddress();
+        String contact =customerDTO.getContact();
+
+        System.out.printf("id=%s, name=%s, address=%s , contact=%s\n", id,name,address,contact);
+
+        try (Connection connection = pool.getConnection()){
+            PreparedStatement stm = connection.prepareStatement("UPDATE customer SET name=?, address=? ,contact=? WHERE id=?");
+
+            stm.setString(1, name);
+            stm.setString(2, address);
+            stm.setString(3,contact);
+            stm.setString(4,id);
+
+            if (stm.executeUpdate() != 0) {
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else{
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update the customer");
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

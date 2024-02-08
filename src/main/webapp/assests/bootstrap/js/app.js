@@ -78,3 +78,36 @@ $('#btnDelete').click(function () {
         }
     })
 });
+
+$('#btnUpdate').click(function () {
+    const id = $('#txt-id').val();
+    const name = $('#txt-name').val();
+    const address = $('#txt-address').val();
+    const contact =$('#txt-contact').val();
+
+    const customerObj = {
+        id:id,
+        name:name,
+        address:address,
+        contact:contact
+    };
+
+    const jsonObj = JSON.stringify(customerObj);
+
+    $.ajax({
+        url: "http://localhost:8080/app/customers",
+        method: "PUT",
+        data: jsonObj,
+        contentType: "application/json",
+        success: function (resp, textStatus, jqxhr) {
+            console.log("success: ", resp);
+            console.log("success: ", textStatus);
+            console.log("success: ", jqxhr);
+        },
+        error: function (jqxhr, textStatus, error) {
+            console.log("error: ", jqxhr);
+            console.log("error: ", textStatus);
+            console.log("error: ", error);
+        }
+    })
+});
