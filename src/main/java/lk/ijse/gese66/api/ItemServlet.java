@@ -3,6 +3,7 @@ package lk.ijse.gese66.api;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import lk.ijse.gese66.dto.CustomerDTO;
+import lk.ijse.gese66.dto.ItemDTO;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.servlet.ServletContext;
@@ -36,22 +37,22 @@ public class ItemServlet extends HttpServlet {
             PreparedStatement stm = connection.prepareStatement("SELECT * FROM item");
             ResultSet rst = stm.executeQuery();
 
-            ArrayList<CustomerDTO> customerList = new ArrayList<>();
+            ArrayList<ItemDTO> itemList = new ArrayList<>();
 
             while (rst.next()){
-                String id = rst.getString("id");
-                String name = rst.getString("name");
-                String address = rst.getString("address");
-                String contact = rst.getString("contact");
-                System.out.printf("id=%s, name=%s, address=%s ,contact=%s\n",id,name,address,contact);
+                String itemId = rst.getString("itemId");
+                String description = rst.getString("description");
+                String unitPrice = rst.getString("unitPrice");
+                String quantity = rst.getString("quantity");
+                System.out.printf("itemId=%s, description=%s, unitPrice=%s ,quantity=%s\n",itemId,description,unitPrice,quantity);
 
-                customerList.add(new CustomerDTO(id, name, address,contact));
+                itemList.add(new ItemDTO(itemId, description, unitPrice,quantity));
             }
 
             resp.setContentType("application/json"); //set the MIME type of the content of the response (Thus, add response header called "Content-Type")
 
             Jsonb jsonb = JsonbBuilder.create();
-            jsonb.toJson(customerList,resp.getWriter());
+            jsonb.toJson(itemList,resp.getWriter());
 
 
         } catch (SQLException e) {

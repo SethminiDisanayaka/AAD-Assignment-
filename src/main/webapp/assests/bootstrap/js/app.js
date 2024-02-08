@@ -111,3 +111,31 @@ $('#btnUpdate').click(function () {
         }
     })
 });
+
+
+$('#onActionSaveItem').click(function (){
+    $.ajax({
+        url:"http://localhost:8080/pos/items",
+        method:"GET",
+        success:function (resp){
+            console.log("success", resp);
+            for (const item of resp){
+                console.log(item.itemId);
+                console.log(item.description);
+                console.log(item.unitPrice);
+                console.log(item.quantity);
+
+                const row = `<tr>
+                                <td>${item.itemId}</td>
+                                <td>${item.description}</td>
+                                <td>${item.unitPrice}</td>
+                                <td>${item.quantity}</td>
+                            </tr>`;
+                $('#tblItem').append(row);
+            }
+        },
+        error : function (error) {
+            console.log("error: ", error);
+        }
+    })
+});
