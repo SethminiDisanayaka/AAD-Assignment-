@@ -49,7 +49,7 @@ public class ItemServlet extends HttpServlet {
                 itemList.add(new ItemDTO(itemId, description, unitPrice,quantity));
             }
 
-            resp.setContentType("application/json"); //set the MIME type of the content of the response (Thus, add response header called "Content-Type")
+            resp.setContentType("application/json");
 
             Jsonb jsonb = JsonbBuilder.create();
             jsonb.toJson(itemList,resp.getWriter());
